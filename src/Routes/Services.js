@@ -5,8 +5,8 @@ import Auth from "../Common/Auth.js"
 const router = express.Router();
 
 router.post("/create", Auth.adminGaurd, ServiceController.createService);
-router.get("/:id", ServiceController.getServicesByStore);
-router.put("/:id",ServiceController.editService);
-router.delete("/:id",ServiceController.deleteService);
+router.get("/store/:storeId", ServiceController.getServicesByStore);
+router.put("/:serviceId", Auth.adminGaurd, ServiceController.editService);
+router.delete("/:serviceId", Auth.adminGaurd, ServiceController.deleteService);
 
 export default router

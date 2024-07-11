@@ -26,10 +26,10 @@ let upload = multer({
 });
 
 router.post("/create",upload.array('images',3),Auth.adminGaurd,StoreController.createStore)
-router.put("/:id",Auth.adminGaurd,StoreController.editStore)
-router.delete("/:id",StoreController.deleteStore)
+router.put("/:storeId",Auth.adminGaurd,StoreController.editStore)
+router.delete("/:storeId",StoreController.deleteStore)
 router.get("/",StoreController.getStores)
 // router.get("/",StoreController.getAllStoresByLocation)
-router.get("/:id",StoreController.getStoresById)
+router.get("/:storeId",StoreController.getStoresById)
 
 export default router
