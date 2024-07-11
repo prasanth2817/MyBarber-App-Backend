@@ -1,7 +1,7 @@
 import BusinessUserModel from "../Models/BusinessUsers.js";
 import Auth from "../Common/Auth.js";
 
-const createUser = async (req, res) => {
+const createBusinessUser = async (req, res) => {
   try {
     let user = await BusinessUserModel.findOne({ email: req.body.email });
     if (!user) {
@@ -113,7 +113,7 @@ const resetPassword = async (req, res) => {
 };
 
 export default {
-  createUser,
+  createBusinessUser,
   Login,
   forgotPassword,
   resetPassword,
