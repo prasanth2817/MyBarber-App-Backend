@@ -1,4 +1,4 @@
-import AppointmentsModel from '../Models/Appointments.js';
+import AppointmentModel from '../Models/Appointments.js';
 import StoreModel from '../Models/Stores.js';
 import ServiceModel from '../Models/Services.js';
 
@@ -85,7 +85,7 @@ const editAppointment = async (req, res) => {
         const { _id } = req.params.id;
         const { customerName, customerEmail, services, appointmentDate, appointmentTime, store } = req.body;
 
-        const updatedAppointment = await AppointmentsModel.findByIdAndUpdate(
+        const updatedAppointment = await AppointmentModel.findByIdAndUpdate(
             _id,
             {
                 customerName,
@@ -114,7 +114,7 @@ const deleteAppointment = async (req, res) => {
     try {
         const { _id } = req.params.id;
 
-        const deletedAppointment = await AppointmentsModel.findByIdAndDelete(_id);
+        const deletedAppointment = await AppointmentModel.findByIdAndDelete(_id);
 
         if (deletedAppointment) {
             res.status(200).send({ message: "Appointment Deleted Successfully" });
@@ -129,7 +129,7 @@ const deleteAppointment = async (req, res) => {
 
 const getAppointmentByStores= async(req,res)=>{
     try {
-      const appointment = await AppointmentsModel.findById(req.params.id)
+      const appointment = await AppointmentModel.findById(req.params.id)
       if(appointment)
       res.status(200).send({message:"Stores Fetched successfully",
     appointments:appointment})
@@ -147,7 +147,7 @@ const getAppointmentByStores= async(req,res)=>{
   const getAppointmentByUser= async(req,res)=>{
     try {
       const { email } = req.body;
-      const appointments = await AppointmentsModel.find({email})
+      const appointments = await AppointmentModel.find({email})
       if(appointments.length > 0)
       res.status(200).send({message:"appointments Fetched successfully",
     appointment : appointments})
