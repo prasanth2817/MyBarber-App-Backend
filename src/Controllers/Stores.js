@@ -16,21 +16,25 @@ const createStore = async (req, res) => {
       timings,
       teamMembers,
       shopOwner,
-      services,
+      serviceIds,
     } = req.body;
 
-    // Check if all required fields are present
-    if (
-      !storeName ||
-      !description ||
-      !location ||
-      !address ||
-      !timings ||
-      !teamMembers ||
-      !shopOwner ||
-      !services
-    ) {
-      return res.status(400).send({ message: "Required fields are missing" });
+    // Check for missing fields
+    const missingFields = [];
+    if (!storeName) missingFields.push("storeName");
+    if (!description) missingFields.push("description");
+    if (!location) missingFields.push("location");
+    if (!address) missingFields.push("address");
+    if (!timings) missingFields.push("timings");
+    if (!teamMembers) missingFields.push("teamMembers");
+    if (!shopOwner) missingFields.push("shopOwner");
+    if (!serviceIds) missingFields.push("serviceIds");
+
+    if (missingFields.length > 0) {
+      return res.status(400).send({
+        message: "Required fields are missing",
+        missingFields: missingFields,
+      });
     }
 
     // Handle image paths (assuming req.files is an array of file objects)
@@ -45,7 +49,7 @@ const createStore = async (req, res) => {
       images: imagePaths,
       teamMembers: JSON.parse(teamMembers), // Assuming teamMembers is sent as a JSON string
       shopOwner: JSON.parse(shopOwner),
-      services: JSON.parse(services)
+      services: serviceIds,
     });
 
     // Save the new Store to the database
@@ -64,6 +68,7 @@ const createStore = async (req, res) => {
     });
   }
 };
+
 
 const editStore = async (req, res) => {
   try {

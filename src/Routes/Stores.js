@@ -1,31 +1,13 @@
 import express from 'express'
-import multer from "multer"
-import path from "path"
+import parser from '../Config/multerConfig.js';
 import StoreController from '../Controllers/Stores.js'
 import Auth from '../Common/Auth.js'
 
 const router = express.Router();
 
-//use of multer package
-let storage = multer.diskStorage({
-    destination :(req, file, cb)=>{          
-        cb(null, "Public/Images")
-    },
-    filename:(req, file, cb)=>{
-        const uniqueSuffix = Date.now() + path.extname(file.originalname)
-        cb(null, file.fieldname + '-' + uniqueSuffix)
-    }
-})
 
-let maxSize = 2 * 1000 * 1000;
-let upload = multer({
-    storage : storage,
-    limits : {
-        fileSize : maxSize
-    }
-});
 
-router.post("/create",upload.array('images',3),Auth.adminGaurd,StoreController.createStore)
+router.post("/create",parser.array("images"),Auth.adminGaurd,StoreController.createStore)
 router.put("/:storeId",Auth.adminGaurd,StoreController.editStore)
 router.delete("/:storeId",StoreController.deleteStore)
 router.get("/",StoreController.getStores)

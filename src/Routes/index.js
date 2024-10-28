@@ -5,12 +5,12 @@ import StoreRoutes from "./Stores.js"
 import ServiceRoutes from "./Services.js";
 import AppointmentsRoutes from "./Appointments.js";
 
-const router= express.Router();
+const router = express.Router();
 
-router.use("/users",UserRoutes)
+router.use("/user",UserRoutes)
 router.use("/stores",StoreRoutes)
 router.use("/services",ServiceRoutes)
 router.use("/appointments",AppointmentsRoutes)
-router.use("/business-users",BusinessRoutes)
+router.use("/business-user",BusinessRoutes)
 
 export default router

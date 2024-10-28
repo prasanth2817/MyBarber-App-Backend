@@ -58,11 +58,23 @@ const adminGaurd = async(req,res,next)=>{
     }
 }
 
+const verifyRole = (roles) => {
+  return (req, res, next) => {
+    if (roles.includes(req.user.role)) {
+      next();
+    } else {
+      res.status(403).send("Forbidden");
+    }
+  };
+};
+
+
 export default {
   hashPassword,
   hashCompare,
   createToken,
   decodeToken,
   validate,
-  adminGaurd
+  adminGaurd,
+  verifyRole
 };

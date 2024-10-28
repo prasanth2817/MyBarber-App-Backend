@@ -11,7 +11,7 @@ const createService = async (req, res) => {
       }
   
       // Create the new service
-      const newService = new ServiceModel({ name, price, duration, store: storeId });
+      const newService = new ServiceModel({ name, price, duration, storeId });
       await newService.save();
   
       // Update the corresponding store with the new service
