@@ -94,16 +94,23 @@ const createService = async (req, res) => {
     }
   };
 
-const getServicesByStore = async (req, res) => {
+  const getServicesByStore = async (req, res) => {
     try {
-        const storeId = req.params.id;
-        const services = await ServiceModel.find({ store: storeId });
+        const storeId = req.params.storeId;
+
+        const services = await ServiceModel.find({ storeId });
+
+        if (!services.length) {
+            return res.status(404).send({ message: 'No services found for this store' });
+        }
+
         res.status(200).send(services);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send({ error: error.message, message: 'Error in fetching services' });
     }
 };
+
 
 export default {
     createService,

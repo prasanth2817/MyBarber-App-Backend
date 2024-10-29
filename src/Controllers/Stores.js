@@ -12,8 +12,10 @@ const createStore = async (req, res) => {
       storeName,
       description,
       location,
+      venueType,
       address,
-      timings,
+      openTime,
+      closeTime,
       teamMembers,
       shopOwner,
       serviceIds,
@@ -24,8 +26,10 @@ const createStore = async (req, res) => {
     if (!storeName) missingFields.push("storeName");
     if (!description) missingFields.push("description");
     if (!location) missingFields.push("location");
+    if (!venueType) missingFields.push("location");
     if (!address) missingFields.push("address");
-    if (!timings) missingFields.push("timings");
+    if (!openTime) missingFields.push("openTime");
+    if (!closeTime) missingFields.push("closeTime");
     if (!teamMembers) missingFields.push("teamMembers");
     if (!shopOwner) missingFields.push("shopOwner");
     if (!serviceIds) missingFields.push("serviceIds");
@@ -44,10 +48,12 @@ const createStore = async (req, res) => {
       storeName,
       description,
       location,
+      venueType,
       address,
-      timings,
+      openTime,
+      closeTime,
       images: imagePaths,
-      teamMembers: JSON.parse(teamMembers), // Assuming teamMembers is sent as a JSON string
+      teamMembers: JSON.parse(teamMembers),
       shopOwner: JSON.parse(shopOwner),
       services: serviceIds,
     });
@@ -130,6 +136,33 @@ const deleteStore = async (req, res) => {
     }
   };
 
+  const searchStore = async (req, res) => {
+    try {
+      const { query, venueType } = req.query;
+      const filters = {};
+  
+      // Handle search query
+      if (query) {
+        filters.$or = [
+          { storeName: { $regex: query, $options: "i" } },
+          { location: { $regex: query, $options: "i" } },
+        ];
+      }
+  
+      // Handle property type filter
+      if (venueType) filters.venueType = venueType;
+   
+      // Fetch properties based on filters
+      const stores = await StoreModel.find(filters);
+      res.status(200).json(stores);
+    } catch (error) {
+      console.error("Error:", error);
+      res
+        .status(500)
+        .json({ message: "Error searching properties", error: error.message });
+    }
+  };
+
   const getStoresById= async(req,res)=>{
     try {
       const store = await StoreModel.findById(req.params.id).populate('services');
@@ -185,6 +218,7 @@ export default {
   createStore,
   editStore,
   deleteStore,
+  searchStore,
   getStoresById,
   getStoresByLocation,
   getStores
