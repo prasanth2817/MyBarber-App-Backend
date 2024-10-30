@@ -12,7 +12,6 @@ router.put("/:storeId",Auth.adminGaurd,StoreController.editStore)
 router.delete("/:storeId",StoreController.deleteStore)
 router.get("/",StoreController.getStores)
 router.get("/search",StoreController.searchStore)
-// router.get("/",StoreController.getAllStoresByLocation)
 router.get("/:storeId",StoreController.getStoresById)
 
 export default router
