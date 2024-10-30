@@ -20,45 +20,17 @@ const createAppointment = async (req, res) => {
              });
          }
 
-         console.log("Creating appointment with the following data:", {
-            userId,
-            serviceIds,
-            appointmentDate,
-            appointmentTime,
-            storeId
-        });
-
          const serviceIdArray = Array.isArray(serviceIds) ? serviceIds : [serviceIds];
 
         const store = await StoreModel.findById(storeId);
         if (!store) {
             return res.status(404).send({ message: 'Store not found' });
-
-//             const testServiceIds = ["671ee029f82cac9fb758d644"];
-// const testStoreId = "671dfb86e59e43c0f03a6b7d";
-
-// const services = await ServiceModel.find({ _id: { $in: testServiceIds }, store: testStoreId });
-// console.log("Hardcoded services query result:", services);
         }
 
         // Validate that each service ID belongs to the given store
         const services = await ServiceModel.find({ _id: { $in: serviceIdArray }, storeId });
-        console.log("Services found for store:", services);
-console.log("Provided service IDs:", serviceIdArray);
         if (!services.length) {
             return res.status(400).send({ message: 'Invalid services or services do not belong to the store' });
-        }
-
-
-        // Check if all requested services exist and are valid for the store
-        const validServiceIds = services.map(service => service._id.toString());
-
-        console.log(validServiceIds);
-        
-        const invalidServices = serviceIdArray.filter(id => !validServiceIds.includes(id));
-
-        if (invalidServices.length) {
-            return res.status(400).send({ message: 'Some services are invalid or do not belong to the store', invalidServices });
         }
 
         // Proceed with appointment creation if all validations pass

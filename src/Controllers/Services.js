@@ -103,7 +103,6 @@ const createService = async (req, res) => {
         if (!services.length) {
             return res.status(404).send({ message: 'No services found for this store' });
         }
-
         res.status(200).send(services);
     } catch (error) {
         console.error('Error:', error);
