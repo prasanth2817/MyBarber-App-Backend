@@ -29,7 +29,7 @@ const createService = async (req, res) => {
       store.services.push(newService._id);
       await store.save();
   
-      res.status(201).send({ message: "Service Created Successfully", service: newService });
+      res.status(200).send({ message: "Service Created Successfully", service: newService });
     } catch (error) {
       console.error('Error:', error);
       res.status(500).send({ error: error.message, message: 'Error in creating service' });

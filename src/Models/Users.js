@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema(
     },
     password: { type: String, required: [true, "Password is required"] },
     role: { type: String, default: "user" },
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Store' }]
   },
   {
     Collection: "Users",

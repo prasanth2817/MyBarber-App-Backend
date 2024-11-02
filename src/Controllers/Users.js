@@ -1,6 +1,82 @@
 import UserModel from "../Models/Users.js";
 import Auth from "../Common/Auth.js";
 
+const addToFavorites = async (req, res) => {
+    const { userId, storeId } = req.body;
+
+    try {
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        // Check if the store is already in favorites
+        if (user.favorites.includes(storeId)) {
+            return res.status(400).send({ message: 'Store is already in favorites' });
+        }
+
+        // Add storeId to favorites array
+        user.favorites.push(storeId);
+        await user.save();
+
+        res.status(200).send({ message: 'Store added to favorites successfully', favorites: user.favorites });
+    } catch (error) {
+        console.error('Error adding to favorites:', error);
+        res.status(500).send({ message: 'Error adding to favorites', error: error.message });
+    }
+};
+
+const removeFromFavorites = async (req, res) => {
+  const { userId, storeId } = req.body;
+
+  try {
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { $pull: { favorites: storeId } }, // Removes the storeId from favorites
+      { new: true } 
+    );
+
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    res.status(200).send({
+      message: "Store removed from favorites successfully",
+      favorites: user.favorites,
+    });
+  } catch (error) {
+    console.error('Error removing from favorites:', error);
+    res.status(500).send({
+      message: 'Error removing from favorites',
+      error: error.message,
+    });
+  }
+};
+
+const getUserFavorites = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await UserModel.findById(userId).populate('favorites');
+
+    if (!user || user.favorites.length === 0) {
+      return res.status(404).send({ message: "No favorites found" });
+    }
+
+    res.status(200).send({
+      message: "Favorites fetched successfully",
+      favorites: user.favorites,
+    });
+  } catch (error) {
+    console.error('Error fetching favorites:', error);
+    res.status(500).send({
+      message: 'Error fetching favorites',
+      error: error.message,
+    });
+  }
+};
+
 const createUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -18,6 +94,7 @@ const createUser = async (req, res) => {
       ...req.body,
       email: email.toLowerCase(),
       password: hashedPassword,
+      favorites:[],
     });
 
     res.status(201).send({ message: "Account created successfully" });
@@ -134,6 +211,9 @@ export default {
   createUser,
   Login,
   Logout,
+  addToFavorites,
+  removeFromFavorites,
+  getUserFavorites,
   forgotPassword,
   resetPassword,
 };

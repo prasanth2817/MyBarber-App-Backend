@@ -40,6 +40,7 @@ const createAppointment = async (req, res) => {
             appointmentDate,
             appointmentTime,
             storeId,
+            status: 'Confirmed'
         });
 
         await newAppointment.save();
@@ -50,6 +51,51 @@ const createAppointment = async (req, res) => {
         res.status(500).send({ error: error.message, message: 'Error in creating appointment' });
     }
 };
+
+// Update appointment status
+const updateAppointmentStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (!['Confirmed', 'Cancelled'].includes(status)) {
+            return res.status(400).send({ message: 'Invalid status value' });
+        }
+
+        const updatedAppointment = await AppointmentModel.findByIdAndUpdate(
+            id,
+            { status },
+            { new: true }
+        );
+
+        if (updatedAppointment) {
+            res.status(200).send({ message: "Appointment status updated successfully", appointment: updatedAppointment });
+        } else {
+            res.status(404).send({ message: "Appointment not found" });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send({ error: error.message, message: 'Error in updating appointment status' });
+    }
+};
+
+// Get confirmed appointments by user ID
+const getConfirmedAppointmentsByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const appointments = await AppointmentModel.find({ userId, status: 'Confirmed' });
+
+        if (appointments.length > 0) {
+            res.status(200).send({ message: "Confirmed appointments fetched successfully", appointments });
+        } else {
+            res.status(404).send({ message: "No confirmed appointments found" });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send({ error: error.message, message: 'Error in getting appointments' });
+    }
+};
+
 
 // Edit Appointment
 const editAppointment = async (req, res) => {
@@ -118,8 +164,8 @@ const getAppointmentByStores= async(req,res)=>{
   
   const getAppointmentByUser= async(req,res)=>{
     try {
-      const { email } = req.body;
-      const appointments = await AppointmentModel.find({email})
+      const { userId } = req.params;
+      const appointments = await AppointmentModel.find({userId}).populate("storeId")
       if(appointments.length > 0)
       res.status(200).send({message:"appointments Fetched successfully",
     appointment : appointments})
@@ -135,6 +181,8 @@ const getAppointmentByStores= async(req,res)=>{
   }
 export default {
     createAppointment,
+    updateAppointmentStatus,
+    getConfirmedAppointmentsByUser,
     editAppointment,
     deleteAppointment,
     getAppointmentByStores,

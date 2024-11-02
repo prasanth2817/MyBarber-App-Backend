@@ -5,8 +5,6 @@ import Auth from '../Common/Auth.js'
 
 const router = express.Router();
 
-
-
 router.post("/create",parser.array("images"),Auth.adminGaurd,StoreController.createStore)
 router.put("/:storeId",Auth.adminGaurd,StoreController.editStore)
 router.delete("/:storeId",StoreController.deleteStore)

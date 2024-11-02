@@ -14,8 +14,8 @@ const StoreSchema = new mongoose.Schema(
       type: String,
       required: [true, "Store description is required"],
     },
-    openTime: { type: String, required: [true, "Opening time is required"] },
-    closeTime: { type: String, required: [true, "Closing time is required"] },
+    openTime: { type: String },
+    closeTime: { type: String},
     images: [{ type: String }],
     teamMembers: [
       {
