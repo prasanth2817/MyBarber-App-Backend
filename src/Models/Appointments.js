@@ -5,7 +5,9 @@ const AppointmentsSchema = new mongoose.Schema({
     serviceIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true }],
     appointmentDate: { type: Date, required: [true, "Appointment Date is required"] },
     appointmentTime: { type: String, required: [true, "Appointment Time is required"] },
-    storeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true }
+    storeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true },
+    status : {type:String, default:"Confirmed", enum : ["Confirmed","Cancelled"] },
+    timestamp: { type: Date, default: Date.now },
 },
 {
     collection:"Appointments",

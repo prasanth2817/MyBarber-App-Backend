@@ -34,6 +34,7 @@ const StoreSchema = new mongoose.Schema(
     professionals: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Professional" },
     ],
+    timestamp: { type: Date, default: Date.now },
   },
   {
     collection: "Stores",

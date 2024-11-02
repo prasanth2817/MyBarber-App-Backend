@@ -36,7 +36,8 @@ const addToFavorites = async (req, res) => {
 };
 
 const removeFromFavorites = async (req, res) => {
-  const { userId, storeId } = req.body;
+  const userId = req.params.id;
+  const { storeId } = req.body;
 
   try {
     const user = await UserModel.findByIdAndUpdate(
@@ -63,7 +64,7 @@ const removeFromFavorites = async (req, res) => {
 };
 
 const getUserFavorites = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.params.id;
 
   try {
     const user = await UserModel.findById(userId).populate("favorites");
