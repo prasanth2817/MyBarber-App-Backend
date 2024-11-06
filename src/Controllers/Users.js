@@ -88,7 +88,7 @@ const getUserFavorites = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, userName, fullName } = req.body;
     const existingUser = await UserModel.findOne({
       email: email.toLowerCase(),
     });
@@ -99,20 +99,46 @@ const createUser = async (req, res) => {
 
     // Create the new user if not found
     const hashedPassword = await Auth.hashPassword(password);
-    await UserModel.create({
-      ...req.body,
+    const newUser = await UserModel.create({
       email: email.toLowerCase(),
       password: hashedPassword,
+      userName,
+      fullName,
       favorites: [],
     });
 
-    res.status(201).send({ message: "Account created successfully" });
+    res.status(201).send({ message: "Account created successfully", user: newUser });
   } catch (error) {
+    console.error("Error creating user:", error);
     res
       .status(500)
       .send({ message: "Internal server error", error: error.message });
   }
 };
+
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userName, fullName, password } = req.body;
+    const updates = { userName, fullName };
+
+    // Hash password if it's updated
+    if (password) {
+      updates.password = await Auth.hashPassword(password);
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(id, updates, { new: true });
+    if (!updatedUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    res.status(200).send({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).send({ message: "Internal server error", error: error.message });
+  }
+};
+
 
 const Login = async (req, res) => {
   try {
@@ -225,4 +251,5 @@ export default {
   getUserFavorites,
   forgotPassword,
   resetPassword,
+  updateUser,
 };

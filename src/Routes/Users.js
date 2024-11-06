@@ -1,14 +1,23 @@
 import express from "express";
-import UserController from "../Controllers/Users.js"
+import UserController from "../Controllers/Users.js";
 
-const router= express.Router();
-router.use("/register",UserController.createUser)
-router.use("/login",UserController.Login)
-router.use("/logout", UserController.Logout);
-router.use("/forget-password",UserController.forgotPassword)
-router.use("/reset-passsword",UserController.resetPassword)
-router.use("/favorites/add/:id",UserController.addToFavorites)
-router.use("/favorites/remove/:id",UserController.removeFromFavorites)
-router.use("/favorites/:id",UserController.getUserFavorites)
+const router = express.Router();
 
-export default router
+// User registration and authentication routes
+router.post("/register", UserController.createUser);
+router.post("/login", UserController.Login);
+router.post("/logout", UserController.Logout);
+
+// Password management routes
+router.post("/forget-password", UserController.forgotPassword);
+router.post("/reset-password", UserController.resetPassword);
+
+// Favorites management routes
+router.put("/favorites/add/:id", UserController.addToFavorites);
+router.delete("/favorites/remove/:id", UserController.removeFromFavorites);
+router.get("/favorites/:id", UserController.getUserFavorites);
+
+// User profile update route
+router.put("/:id", UserController.updateUser);
+
+export default router;
