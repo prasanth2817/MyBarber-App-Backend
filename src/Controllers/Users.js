@@ -139,7 +139,6 @@ const updateUser = async (req, res) => {
   }
 };
 
-
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
